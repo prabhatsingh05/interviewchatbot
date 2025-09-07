@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>My Interview History</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      padding: 40px;
+      color: #fff;
+    }
+
+    header, footer {
+      text-align: center;
+      padding: 15px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    h1, h2 {
+      margin-bottom: 10px;
+    }
+
+    .history-container {
+      max-width: 1000px;
+      margin: auto;
+      background: rgba(255,255,255,0.95);
+      border-radius: 25px;
+      color: #262626;
+      padding: 25px;
+      box-shadow: 0 12px 40px rgba(0,255,204,0.2), inset 0 0 25px rgba(0,255,204,0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #00ffcc;
+      color: #121212;
+    }
+    tr:nth-child(even) { background: #f2f2f2; }
+    .accurate { color: green; font-weight: 600; }
+    .inaccurate { color: red; font-weight: 600; }
+
+    .session-title {
+      margin-top: 25px;
+      background: #00d1ff;
+      padding: 8px 12px;
+      border-radius: 12px;
+      color: #121212;
+      font-weight: 600;
+    }
+
+    @media (max-width: 800px) {
+      .history-container { padding: 15px; }
+      th, td { font-size: 12px; padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Interview History</h1>
+    <p>Review all your past interview sessions and scores</p>
+  </header>
+
+  <div class="history-container" id="history-container">
+    <!-- Session tables will be appended here -->
+  </div>
+
+  <footer>
+    &copy; 2025 Interview Prep Portal
+  </footer>
+
+  <script>
+    const userId = localStorage.getItem("user_id") || prompt("Enter your user ID:");
+
+    if(!userId){
+      document.getElementById("history-container").innerHTML = "<p>Please provide a valid user ID to see history.</p>";
+    } else {
+      fetch(`http://localhost:8000/feedback_history/${userId}`)
+        .then(r => r.json())
+        .then(data => {
+          const container = document.getElementById("history-container");
+          if(!data.history || data.history.length === 0){
+            container.innerHTML = "<p>No history found for this user.</p>";
+            return;
+          }
+
+          data.history.forEach((session, index) => {
+            const sessionDiv = document.createElement("div");
+            sessionDiv.innerHTML = `<div class="session-title">Session ${index+1} - Score: ${session.score}/${session.total}</div>`;
+            
+            let tableHTML = `<table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Question</th>
+                  <th>Your Answer</th>
+                  <th>Correct Answer</th>
+                  <th>Status</th>
+                  <th>Accuracy (%)</th>
+                </tr>
+              </thead>
+              <tbody>`;
+
+            session.answers.forEach((ans,i) => {
+              const cls = ans.correct ? "accurate" : "inaccurate";
+              tableHTML += `<tr>
+                <td>${i+1}</td>
+                <td>${ans.question}</td>
+                <td>${ans.user_answer}</td>
+                <td>${ans.correct_answer}</td>
+                <td class="${cls}">${ans.correct?"Correct":"Incorrect"}</td>
+                <td>${ans.accuracy}</td>
+              </tr>`;
+            });
+
+            tableHTML += "</tbody></table>";
+            sessionDiv.innerHTML += tableHTML;
+            container.appendChild(sessionDiv);
+          });
+        })
+        .catch(err => {
+          document.getElementById("history-container").innerHTML = `<p>Error fetching history: ${err}</p>`;
+        });
+    }
+  </script>
+</body>
+</html>

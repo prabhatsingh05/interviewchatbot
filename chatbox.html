@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interview Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    header {
+      width: 85%;
+      max-width: 1000px;
+      background: rgba(0,0,0,0.6);
+      color: #00ffcc;
+      text-align: center;
+      padding: 20px;
+      border-radius: 20px;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(0,255,204,0.3);
+      letter-spacing: 1px;
+    }
+
+    .chat-container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 25px;
+      box-shadow: 0 12px 40px rgba(0,255,204,0.2), inset 0 0 25px rgba(0,255,204,0.1);
+      width: 85%;
+      max-width: 1000px;
+      display: flex;
+      flex-direction: column;
+      min-height: 700px;
+      border: 1px solid #ccc;
+      overflow: hidden;
+      position: relative;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn { 0% { opacity:0; transform: translateY(-30px); } 100% { opacity:1; transform: translateY(0); } }
+
+    .chat-box {
+      flex: 1 1 auto;
+      padding: 25px;
+      background: #e5ddd5;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      max-width: 70%;
+      padding: 14px 18px;
+      border-radius: 25px;
+      font-size: 16px;
+      line-height: 1.6;
+      word-break: break-word;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInMsg 0.3s forwards;
+    }
+
+    @keyframes fadeInMsg { to { opacity:1; transform: translateY(0); } }
+
+    .message.bot {
+      align-self: flex-start;
+      background: #fff;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 25px;
+      border-top-right-radius: 25px;
+      color: #262626;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: #dcf8c6;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 25px;
+      border-top-left-radius: 25px;
+      color: #075e54;
+      font-weight: 500;
+    }
+
+    .typing {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      margin-bottom: 8px;
+      align-self: flex-start;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #555;
+      border-radius: 50%;
+      animation: bounce 0.6s infinite alternate;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce { to { transform: translateY(-6px); } }
+
+    .chat-input {
+      display: flex;
+      gap: 12px;
+      border-top: 1px solid #ccc;
+      background: #f0f0f0;
+      padding: 18px;
+      border-radius: 0 0 25px 25px;
+      align-items: center;
+      min-height: 65px;
+    }
+
+    .chat-input input[type="text"] {
+      flex: 1 1 auto;
+      padding: 14px 18px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      background: #fff;
+      outline: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .chat-input input[type="text"]:focus {
+      border-color: #00ffcc;
+      background: #f6faff;
+    }
+
+    #send-btn {
+      padding: 12px 24px;
+      background: linear-gradient(90deg, #00ffcc, #00d1ff);
+      color: #121212;
+      border: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #send-btn:hover:not(:disabled) {
+      background: linear-gradient(90deg, #ff7b72, #ffb97b);
+      transform: scale(1.05);
+    }
+    #send-btn:disabled { background: #b2e0f7; cursor: not-allowed; }
+
+    #feedback {
+      font-size: 14px;
+      text-align: center;
+      padding: 6px 12px;
+      min-height: 22px;
+      color: #16622b;
+      font-weight: 600;
+    }
+
+    footer {
+      width: 85%;
+      max-width: 1000px;
+      text-align: center;
+      padding: 12px 20px;
+      margin-top: 15px;
+      border-radius: 15px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(0,255,204,0.2);
+    }
+
+    @media (max-width: 800px) {
+      .chat-container, header, footer { width: 95vw; border-radius: 20px; }
+      .chat-input input[type="text"], #send-btn { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>💻 Welcome to Your Interview Chatbot</header>
+
+  <div class="chat-container">
+    <div class="chat-box" id="chat-box"></div>
+    <div class="chat-input">
+      <input type="text" id="user-input" placeholder="Type your answer..." autocomplete="off" />
+      <button id="send-btn">Send</button>
+    </div>
+    <div id="feedback"></div>
+  </div>
+
+  <footer>© 2025 Interview Bot • Sharpen your skills with every question!</footer>
+
+  <script>
+    const backendUrl = "http://localhost:8000";
+    const chatBox = document.getElementById("chat-box"),
+          userInput = document.getElementById("user-input"),
+          sendBtn = document.getElementById("send-btn"),
+          feedbackDiv = document.getElementById("feedback");
+
+    let sessionId = null, setup = JSON.parse(localStorage.getItem("interviewSetup") || "{}"), questionCount = 0;
+    let typingIndicator = null;
+
+    function addMessage(text, sender){
+      if(typingIndicator) { typingIndicator.remove(); typingIndicator = null; }
+      const div = document.createElement("div");
+      div.className = "message "+sender;
+      div.innerHTML = sender=="bot"? `<b>🤖</b> ${text}` : `<b>🧑</b> ${text}`;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showTyping(){
+      typingIndicator = document.createElement("div");
+      typingIndicator.className = "typing";
+      typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+      chatBox.appendChild(typingIndicator);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function startInterview() {
+      showTyping();
+      setTimeout(() => addMessage(`Hi! Ready for a ${setup.mode} ${setup.domain} interview as a ${setup.role}?`, "bot"), 800);
+      const res = await fetch(backendUrl+"/start_interview", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(setup)
+      });
+      const data = await res.json(); 
+      sessionId = data.session_id;
+      setTimeout(askNextQuestion, 1000);
+    }
+
+    async function askNextQuestion() {
+      showTyping();
+      const res = await fetch(`${backendUrl}/get_question/${sessionId}`);
+      const data = await res.json();
+      if(data.done){ setTimeout(()=>window.location="feedback.html?session_id="+sessionId,800); return; }
+      questionCount++; 
+      setTimeout(() => addMessage(`Q${questionCount}: ${data.question}`,"bot"), 700);
+    }
+
+    async function submitAnswer(){
+      const answer = userInput.value.trim();
+      if(!answer) return;
+      addMessage(answer,"user"); 
+      userInput.value=""; 
+      feedbackDiv.textContent="";
+      sendBtn.disabled=userInput.disabled=true;
+      const res = await fetch(backendUrl+"/submit_answer", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({session_id:sessionId,answer})
+      });
+      const data = await res.json();
+      feedbackDiv.textContent = data.correct ? "✅ Correct" : "❌ Incorrect";
+      sendBtn.disabled=userInput.disabled=false; 
+      askNextQuestion();
+    }
+
+    sendBtn.onclick=submitAnswer;
+    userInput.onkeypress=e=>{if(e.key==="Enter")sendBtn.click();}
+
+    window.onload=()=>{if(!setup.role){window.location.href="structure.html"; return;} startInterview();}
+  </script>
+
+</body>
+</html>

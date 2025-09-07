@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interview Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* green tint gradient */
+      min-height: 100vh;
+      color: #fff;
+      padding-top: 80px;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* Header */
+    header {
+      width: 100%;
+      padding: 20px 50px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top:0; left:0; right:0;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .logo {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 24px;
+      color:#00ffcc;
+      transition: transform 0.3s ease;
+    }
+    .logo:hover { transform: scale(1.1); color:#00d1ff; }
+
+    nav ul { list-style:none; display:flex; gap:30px; }
+    nav ul li a { font-weight:500; position: relative; }
+    nav ul li a:hover { color:#00ffcc; }
+
+    /* Container */
+    .container {
+      position: relative;
+      width: 85%;
+      max-width: 1000px;
+      margin: 50px auto;
+      background-color: rgba(15,15,15,0.95);
+      padding: 50px;
+      border-radius: 25px;
+      box-shadow: 0 0 50px rgba(0,255,204,0.5), inset 0 0 30px rgba(0,255,204,0.2);
+      text-align: center;
+      backdrop-filter: blur(8px);
+      animation: fadeIn 1s ease forwards;
+    }
+    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(-30px);} 100% { opacity: 1; transform: translateY(0);} }
+
+    h2 {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 36px;
+      color: #00ffcc;
+      margin-bottom: 35px;
+      text-shadow: 0 0 20px #00ffcc;
+    }
+
+    /* Cards */
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    .detail-card {
+      background: rgba(25,25,25,0.9);
+      border: 2px solid rgba(0,255,204,0.4);
+      padding: 25px;
+      border-radius: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 0 10px rgba(0,255,204,0.2);
+    }
+    
+    .detail-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      border-color: #00ffcc;
+      box-shadow: 0 0 20px rgba(0,255,204,0.5);
+    }
+    .detail-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #00ffcc;
+      margin-bottom: 8px;
+    }
+    .detail-value {
+      font-size: 18px;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* Button */
+    .btn {
+      background: linear-gradient(90deg, #00ffcc, #00d1ff);
+      border: none;
+      padding: 18px 0;
+      border-radius: 14px;
+      color: #121212;
+      font-weight: 700;
+      font-size: 20px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      transition: all 0.4s ease;
+      box-shadow: 0 0 16px #00ffcc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: auto;
+    }
+    .btn:hover {
+      background: linear-gradient(90deg, #ff7b72, #ffb97b);
+      box-shadow: 0 0 26px #ff7b72;
+      transform: scale(1.05);
+    }
+
+    .btn i { transition: transform 0.3s ease; }
+    .btn:hover i { transform: translateX(6px); }
+
+    @media (max-width: 600px) {
+      .container { width: 95%; padding: 40px 20px; margin: 30px auto; }
+      h2 { font-size: 30px; }
+      .detail-card { padding: 20px; }
+      .btn { font-size: 18px; padding: 16px 0; }
+      nav ul { gap: 15px; flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo"><i class="fas fa-robot"></i> AI Interview</div>
+    <nav>
+      <ul>
+        <li><a href="structure.html">Home</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>📝 Interview Details</h2>
+
+    <div class="details-grid">
+      <div class="detail-card" onclick="goBack()">
+        <div class="detail-title">👤 Role</div>
+        <div id="role" class="detail-value"></div>
+      </div>
+      <div class="detail-card" onclick="goBack()">
+        <div class="detail-title">🛠️ Domain</div>
+        <div id="domain" class="detail-value"></div>
+      </div>
+      <div class="detail-card" onclick="goBack()">
+        <div class="detail-title">🎯 Mode</div>
+        <div id="mode" class="detail-value"></div>
+      </div>
+      <div class="detail-card" onclick="goBack()">
+        <div class="detail-title">📊 Difficulty</div>
+        <div id="difficulty" class="detail-value"></div>
+      </div>
+    </div>
+
+    <button id="startBtn" class="btn">Start Interview <i class="fas fa-rocket"></i></button>
+  </div>
+
+  <script>
+    const setup = JSON.parse(localStorage.getItem("interviewSetup") || "{}");
+    if (!setup.role) { window.location.href = "structure.html"; }
+    document.getElementById("role").textContent = setup.role;
+    document.getElementById("domain").textContent = setup.domain;
+    document.getElementById("mode").textContent = setup.mode;
+    document.getElementById("difficulty").textContent = setup.difficulty;
+
+    document.getElementById("startBtn").onclick = () => window.location.href = "chatbox.html";
+    function goBack(){ window.location.href = "structure.html"; }
+  </script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Interview Feedback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    header {
+      width: 85%;
+      max-width: 1000px;
+      background: rgba(0,0,0,0.6);
+      color: #00ffcc;
+      text-align: center;
+      padding: 20px;
+      border-radius: 20px;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(0,255,204,0.3);
+      letter-spacing: 1px;
+    }
+
+    .container {
+      width: 85%;
+      max-width: 1000px;
+      background: rgba(255,255,255,0.95);
+      padding: 25px;
+      border-radius: 25px;
+      box-shadow: 0 12px 40px rgba(0,255,204,0.2), inset 0 0 25px rgba(0,255,204,0.1);
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0b3d91;
+      margin-bottom: 15px;
+    }
+
+    .summary {
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #075e54;
+      font-weight: 500;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+    }
+
+    .question {
+      font-weight: 600;
+      color: #1d3557;
+      margin-bottom: 10px;
+    }
+
+    .answer {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .answer strong {
+      color: #0b3d91;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    .accurate { color: #16622b; }
+    .inaccurate { color: #b00020; }
+
+    /* Circular progress */
+    .progress-circle {
+      --size: 90px;
+      --stroke: 10px;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      background: conic-gradient(#00c853 0%, #eee 0%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 15px auto 5px auto;
+      position: relative;
+    }
+
+    .progress-circle::after {
+      content: '';
+      position: absolute;
+      width: calc(var(--size) - var(--stroke) * 2);
+      height: calc(var(--size) - var(--stroke) * 2);
+      background: #fff;
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    .progress-text {
+      position: absolute;
+      font-weight: bold;
+      font-size: 16px;
+      color: #0b3d91;
+      z-index: 2;
+    }
+
+    .progress-label {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0b5ed7; /* blue label */
+    }
+
+    /* Return Home Button */
+    .home-btn {
+      display: inline-block;
+      margin: 15px auto 0 auto;
+      padding: 12px 25px;
+      background: rgba(0,0,0,0.6);
+      color: #00ffcc;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,255,204,0.3);
+      transition: all 0.2s ease;
+    }
+
+    .home-btn:hover {
+      background: rgba(0,0,0,0.8);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,255,204,0.4);
+    }
+
+    footer {
+      width: 85%;
+      max-width: 1000px;
+      text-align: center;
+      padding: 12px 20px;
+      margin-top: 15px;
+      border-radius: 15px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(0,255,204,0.2);
+    }
+
+    @media (max-width: 800px) {
+      .container, header, footer { width: 95vw; border-radius: 20px; }
+    }
+
+    /* Align home button to the right */
+    .right-align {
+      float: right;
+      margin-right: 0;
+      margin-left: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>💻 Interview Feedback Summary</header>
+
+  <div class="container">
+    <h2>Your Performance</h2>
+    <div id="summary" class="summary">Loading feedback...</div>
+    <div class="cards" id="answers"></div>
+    <!-- Return Home Button -->
+    <a href="structure.html" class="home-btn right-align"><i class="fas fa-home"></i> Return to Home</a>
+  </div>
+
+  <footer>© 2025 Interview Bot • Keep practicing to master your skills!</footer>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const session_id = params.get("session_id");
+    if(!session_id) location="structure.html";
+
+    fetch("http://localhost:8000/feedback/"+session_id)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("summary").innerHTML = data.summary;
+        let html = "";
+
+        data.answers.forEach((ans, i) => {
+          // Lenient logic: accuracy >49% treated as correct
+          let isCorrect = ans.accuracy > 49;
+          let cls = isCorrect ? "accurate" : "inaccurate";
+
+          html += `
+            <div class="card">
+              <div class="question">Q${i+1}: ${ans.question}</div>
+              <div class="answer"><strong>Your Answer:</strong> ${ans.user_answer}</div>
+              <div class="answer"><strong>Correct Answer:</strong> ${ans.correct_answer}</div>
+              <div class="status ${cls}">${isCorrect ? "✅ Correct" : "❌ Incorrect"}</div>
+              <div class="progress-circle" style="background: conic-gradient(#00c853 ${ans.accuracy}%, #eee ${ans.accuracy}%);">
+                <span class="progress-text">${ans.accuracy}%</span>
+              </div>
+              <div class="progress-label">Accuracy</div>
+            </div>
+          `;
+        });
+
+        document.getElementById('answers').innerHTML = html;
+      });
+  </script>
+
+</body>
+</html>
