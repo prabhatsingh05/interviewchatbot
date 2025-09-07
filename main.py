@@ -4,13 +4,19 @@ from pydantic import BaseModel
 import random, re
 
 app = FastAPI()
+
+# 👇 Add this CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],        # tu chahe to ["https://your-frontend.com"] bhi kar sakta hai
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+def root():
+    return {"message": "Backend is running"}
 
 questions_db = {
     "software_engineer_frontend_technical_beginner": [
