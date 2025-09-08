@@ -15,9 +15,9 @@ app.add_middleware(
 )
 
 @app.get("/")
-def read_root():
-    return {"message": "Backend is running
-    with CORS enabled!"}
+def root():
+    return {"message": "Backend is running "}
+
 
 questions_db = {
     "software_engineer_frontend_technical_beginner": [
@@ -210,4 +210,5 @@ def feedback_history(user_id: str):
                 "answers": sess["answers"]
             })
     return {"user_id": user_id, "history": history}
+
 
